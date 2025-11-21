@@ -2,28 +2,20 @@
  * Home Page Screen
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
-  Text,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useTheme } from '../hooks/useTheme';
-import { VideoCard } from '../components/VideoCard';
-import { CategoryBar } from '../components/CategoryBar';
+import { TabNavigation } from '../components/TabNavigation';
 import { SearchBar } from '../components/SearchBar';
-import { VIDEOS, CATEGORIES } from '../constants/data';
 
 export const HomePage = ({ onVideoClick }) => {
-  const [activeCategory, setActiveCategory] = useState('推荐');
   const { theme } = useTheme();
   const styles = getStyles(theme);
-
-  // Duplicate videos for scrolling effect
-  const allVideos = [...VIDEOS, ...VIDEOS.map((v) => ({ ...v, id: `dup-${v.id}` }))];
 
   return (
     <View style={styles.container}>
@@ -38,31 +30,12 @@ export const HomePage = ({ onVideoClick }) => {
             <View style={styles.notificationBadge} />
           </TouchableOpacity>
         </View>
-
-        {/* Categories */}
-        <CategoryBar
-          categories={CATEGORIES}
-          activeCategory={activeCategory}
-          onCategoryChange={setActiveCategory}
-        />
       </View>
 
-      {/* Content Waterfall */}
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.videoGrid}>
-          {allVideos.map((video) => (
-            <VideoCard
-              key={video.id}
-              video={video}
-              onPress={onVideoClick}
-            />
-          ))}
-        </View>
-      </ScrollView>
+      {/* Tab Navigation with Content */}
+      <View style={styles.tabContainer}>
+        <TabNavigation onVideoClick={onVideoClick} />
+      </View>
     </View>
   );
 };
@@ -110,18 +83,9 @@ const getStyles = (theme) =>
       borderWidth: 1,
       borderColor: theme.colors.card,
     },
-    scrollView: {
+    tabContainer: {
       flex: 1,
-      marginTop: 100, // Space for top bar 
-    },
-    scrollContent: {
-      paddingTop: theme.spacing.md,
-      paddingHorizontal: theme.spacing.xs,
-    },
-    videoGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'space-between', 
+      marginTop: 60, // Space for top bar
     },
   });
 
